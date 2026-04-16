@@ -52,13 +52,15 @@ export default function Header() {
         </nav>
 
         <a
-          href="#contacto"
+          href="/docs/cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className={`hidden md:inline-flex items-center px-5 py-2 text-xs font-semibold tracking-widest uppercase rounded-sm transition-all duration-300 ${scrolled
               ? 'bg-[var(--bg-dark)] text-[var(--text-inverse)] hover:bg-[var(--accent)]'
               : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
             }`}
         >
-          Conectar
+          Ver CV
         </a>
       </div>
     </header>
