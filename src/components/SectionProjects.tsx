@@ -13,7 +13,7 @@ const FEATURED_PROJECT = {
     "Asesoria profesional integrada como argumento de conversion.",
     "Tono visual directo, comercial y orientado a resultados reales.",
   ],
-  href: "https://lv-nutrition.vercel.app",
+  href: "https://www.lvnutrition.store",
 };
 
 const PROJECTS = [
