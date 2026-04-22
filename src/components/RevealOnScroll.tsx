@@ -24,7 +24,7 @@ export default function RevealOnScroll({
           observer.unobserve(el);
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.165 },
     );
 
     observer.observe(el);

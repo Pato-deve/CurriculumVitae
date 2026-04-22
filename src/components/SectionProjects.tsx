@@ -1,3 +1,4 @@
+import Image from "next/image";
 import RevealOnScroll from "./RevealOnScroll";
 
 const FEATURED_PROJECT = {
@@ -37,11 +38,17 @@ const PROJECTS = [
   },
 ];
 
-export default function SectionProjects() {
+interface SectionProjectsProps {
+  featuredImageSrc?: string | null;
+}
+
+export default function SectionProjects({
+  featuredImageSrc,
+}: SectionProjectsProps) {
   return (
     <section
       id="proyectos"
-      className="scroll-mt-24 relative pt-24 md:pt-32 pb-24 md:pb-32 bg-[var(--bg-primary)] overflow-hidden"
+      className="deferred-section scroll-mt-24 relative pt-24 md:pt-32 pb-24 md:pb-32 bg-[var(--bg-primary)] overflow-hidden"
     >
       <div className="pointer-events-none absolute top-0 left-0 right-0 h-24 md:h-32 bg-gradient-to-b from-[var(--bg-muted)] to-transparent" />
 
@@ -77,15 +84,15 @@ export default function SectionProjects() {
                   <h3 className="font-serif text-3xl md:text-4xl leading-tight text-white">
                     {FEATURED_PROJECT.title}
                   </h3>
-                  <span className="text-xs uppercase tracking-[0.18em] text-white/55">
+                  <span className="text-xs uppercase tracking-[0.18em] text-white/72">
                     {FEATURED_PROJECT.status}
                   </span>
                 </div>
 
-                <p className="mt-6 text-base leading-relaxed text-white/85 max-w-2xl">
+                <p className="mt-6 text-base leading-relaxed text-white/90 max-w-2xl">
                   {FEATURED_PROJECT.description}
                 </p>
-                <p className="mt-4 text-sm leading-relaxed text-white/65 max-w-xl">
+                <p className="mt-4 text-sm leading-relaxed text-white/78 max-w-xl">
                   {FEATURED_PROJECT.details}
                 </p>
 
@@ -102,14 +109,14 @@ export default function SectionProjects() {
               </div>
 
               <div className="bg-white/5 rounded-[var(--radius-md)] p-6 border border-white/10">
-                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/45 mb-4 block">
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60 mb-4 block">
                   Decisiones clave
                 </span>
                 <ul className="space-y-3">
                   {FEATURED_PROJECT.highlights.map((highlight) => (
                     <li
                       key={highlight}
-                      className="flex gap-3 text-sm leading-relaxed text-white/75"
+                      className="flex gap-3 text-sm leading-relaxed text-white/84"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-white/70 mt-2 shrink-0" />
                       <span>{highlight}</span>
@@ -142,6 +149,18 @@ export default function SectionProjects() {
                 </a>
               </div>
             </div>
+
+            {featuredImageSrc ? (
+              <div className="relative mt-10 overflow-hidden rounded-[var(--radius-md)] border border-white/10 bg-white/5 h-48 md:h-56 lg:h-64">
+                <Image
+                  src={featuredImageSrc}
+                  alt="Vista previa del proyecto LV Nutrition"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 640px"
+                  className="object-cover object-center"
+                />
+              </div>
+            ) : null}
           </article>
         </RevealOnScroll>
 

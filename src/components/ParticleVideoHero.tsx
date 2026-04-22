@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 interface ParticleVideoHeroProps {
+  videoSources: string[];
   /** Ancho de muestreo en píxeles. Menor = más rápido. */
   processingWidth?: number;
   /** Radio base de cada partícula (en unidades de celda). */
@@ -13,16 +14,19 @@ interface ParticleVideoHeroProps {
   step?: number;
   /** Intervalo de rotación en ms. */
   interval?: number;
+  /** FPS máximos para el renderizado del canvas. */
+  fps?: number;
 }
 
 export default function ParticleVideoHero({
+  videoSources,
   processingWidth = 200,
   particleSize = 0.6,
   threshold = 80,
   step = 2,
   interval = 10000,
+  fps = 12,
 }: ParticleVideoHeroProps) {
-  const [videoSources, setVideoSources] = useState<string[]>([]);
   const currentIndexRef = useRef(0);
 
   // Refs de canvas y video
@@ -32,20 +36,60 @@ export default function ParticleVideoHero({
   const animFrameRef = useRef<number>(0);
   const videoReadyRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reducedMotionRef = useRef(false);
 
-  // Fetch dinámico de videos disponibles en /public/videos/
   useEffect(() => {
-    fetch('/api/videos')
-      .then((res) => res.json())
-      .then((list: string[]) => {
-        setVideoSources(list);
-        if (list.length > 0 && videoRef.current) {
-          videoRef.current.src = list[0];
-          videoRef.current.load();
-        }
-      })
-      .catch(() => { });
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const syncPlaybackPreference = () => {
+      reducedMotionRef.current = mediaQuery.matches;
+
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (mediaQuery.matches) {
+        video.pause();
+        return;
+      }
+
+      if (!document.hidden && video.src) {
+        video.play().catch(() => {});
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (document.hidden || reducedMotionRef.current) {
+        video.pause();
+        return;
+      }
+
+      if (video.src) {
+        video.play().catch(() => {});
+      }
+    };
+
+    syncPlaybackPreference();
+    mediaQuery.addEventListener("change", syncPlaybackPreference);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncPlaybackPreference);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || videoSources.length === 0) return;
+
+    currentIndexRef.current = 0;
+    videoReadyRef.current = false;
+    video.src = videoSources[0];
+    video.load();
+  }, [videoSources]);
 
   // Rotación automática cada N segundos
   useEffect(() => {
@@ -55,7 +99,8 @@ export default function ParticleVideoHero({
       const video = videoRef.current;
       if (!video) return;
 
-      currentIndexRef.current = (currentIndexRef.current + 1) % videoSources.length;
+      currentIndexRef.current =
+        (currentIndexRef.current + 1) % videoSources.length;
       videoReadyRef.current = false;
       video.src = videoSources[currentIndexRef.current];
       video.load();
@@ -74,8 +119,8 @@ export default function ParticleVideoHero({
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
-    const ctx = canvas.getContext('2d');
-    if (ctx) ctx.scale(dpr, dpr);
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }, []);
 
   // Render loop principal
@@ -84,14 +129,14 @@ export default function ParticleVideoHero({
     const canvas = renderCanvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     if (!processCanvasRef.current) {
-      processCanvasRef.current = document.createElement('canvas');
+      processCanvasRef.current = document.createElement("canvas");
     }
     const procCanvas = processCanvasRef.current;
-    const procCtx = procCanvas.getContext('2d', { willReadFrequently: true });
+    const procCtx = procCanvas.getContext("2d", { willReadFrequently: true });
     if (!procCtx) return;
 
     syncCanvasSize();
@@ -99,6 +144,8 @@ export default function ParticleVideoHero({
     resizeObserver.observe(canvas);
 
     let processingHeight = Math.floor(processingWidth * 0.5625);
+    const frameInterval = 1000 / fps;
+    let lastRenderTime = 0;
 
     const handleCanPlay = () => {
       if (!video) return;
@@ -107,11 +154,13 @@ export default function ParticleVideoHero({
       procCanvas.width = processingWidth;
       procCanvas.height = processingHeight;
       videoReadyRef.current = true;
-      video.play().catch(() => { });
+      if (!reducedMotionRef.current && !document.hidden) {
+        video.play().catch(() => {});
+      }
     };
 
     if (video) {
-      video.addEventListener('canplay', handleCanPlay);
+      video.addEventListener("canplay", handleCanPlay);
       if (video.readyState >= 3) handleCanPlay();
     }
 
@@ -122,7 +171,7 @@ export default function ParticleVideoHero({
     };
 
     // Gradiente de densidad ASCII: de más oscuro a más claro
-    const ASCII_CHARS = '@#%*+=-:. ';
+    const ASCII_CHARS = "@#%*+=-:. ";
 
     // ═══ RENDER VIDEO → ASCII ═══
     const renderVideo = () => {
@@ -133,7 +182,12 @@ export default function ParticleVideoHero({
       const h = rect.height;
 
       procCtx.drawImage(video, 0, 0, processingWidth, processingHeight);
-      const frameData = procCtx.getImageData(0, 0, processingWidth, processingHeight);
+      const frameData = procCtx.getImageData(
+        0,
+        0,
+        processingWidth,
+        processingHeight,
+      );
       const data = frameData.data;
 
       ctx.clearRect(0, 0, w, h);
@@ -143,9 +197,9 @@ export default function ParticleVideoHero({
       const fontSize = Math.max(scaleX * step * 0.9, 6);
 
       ctx.font = `${fontSize}px monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#FFFFFF";
 
       for (let y = 0; y < processingHeight; y += step) {
         for (let x = 0; x < processingWidth; x += step) {
@@ -158,7 +212,9 @@ export default function ParticleVideoHero({
           if (brightness < threshold) {
             // Mapear oscuridad a un carácter del gradiente
             const normalizedDark = 1 - brightness / threshold;
-            const charIndex = Math.floor(normalizedDark * (ASCII_CHARS.length - 1));
+            const charIndex = Math.floor(
+              normalizedDark * (ASCII_CHARS.length - 1),
+            );
             const char = ASCII_CHARS[charIndex];
 
             const drawX = x * scaleX + scaleX * step * 0.5;
@@ -175,11 +231,20 @@ export default function ParticleVideoHero({
     // ═══ LOOP ═══
     const loop = (time: number) => {
       animFrameRef.current = requestAnimationFrame(loop);
-      if (videoReadyRef.current && video && !video.paused && video.readyState >= 2) {
-        renderVideo();
-      } else {
+      if (
+        !videoReadyRef.current ||
+        !video ||
+        video.paused ||
+        video.readyState < 2
+      ) {
         renderFallback();
+        return;
       }
+
+      if (time - lastRenderTime < frameInterval) return;
+
+      lastRenderTime = time;
+      renderVideo();
     };
 
     animFrameRef.current = requestAnimationFrame(loop);
@@ -187,9 +252,9 @@ export default function ParticleVideoHero({
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       resizeObserver.disconnect();
-      if (video) video.removeEventListener('canplay', handleCanPlay);
+      if (video) video.removeEventListener("canplay", handleCanPlay);
     };
-  }, [processingWidth, particleSize, threshold, step, syncCanvasSize]);
+  }, [fps, processingWidth, particleSize, threshold, step, syncCanvasSize]);
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-[#000000]">
@@ -199,15 +264,25 @@ export default function ParticleVideoHero({
         muted
         loop
         playsInline
+        preload="metadata"
         crossOrigin="anonymous"
         className="hidden"
-      />
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        <track
+          kind="captions"
+          srcLang="es"
+          label="Descripción del fondo"
+          src="/videos/hero-captions.vtt"
+          default
+        />
+      </video>
       <canvas
         ref={renderCanvasRef}
         className="w-full h-full block"
+        aria-hidden="true"
       />
-
-
     </div>
   );
 }

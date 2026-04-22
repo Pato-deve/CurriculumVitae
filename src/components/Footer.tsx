@@ -4,14 +4,14 @@ export default function Footer() {
   return (
     <footer
       id="contacto"
-      className="scroll-mt-24 py-20 md:py-28 bg-[var(--bg-dark)]"
+      className="deferred-section scroll-mt-24 py-20 md:py-28 bg-[var(--bg-dark)]"
     >
       <div className="max-w-[800px] mx-auto px-6 md:px-10 text-center">
         <RevealOnScroll>
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/50 mb-6 block">
+          <h2 className="text-xs font-semibold tracking-[0.2em] uppercase text-white/68 mb-6 block">
             Contacto
-          </span>
-          <p className="text-sm leading-relaxed text-white/75 max-w-md mx-auto mb-10">
+          </h2>
+          <p className="text-sm leading-relaxed text-white/88 max-w-md mx-auto mb-10">
             Abierto a oportunidades, colaboraciones y proyectos interesantes. Si
             tenés una idea, un problema o una propuesta, escribime.
           </p>
@@ -45,7 +45,7 @@ export default function Footer() {
               href="https://github.com/Pato-deve"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/55 hover:text-white transition-colors duration-300"
+              className="text-white/72 hover:text-white transition-colors duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ export default function Footer() {
               href="https://www.linkedin.com/in/patriciomartinez-web"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/55 hover:text-white transition-colors duration-300"
+              className="text-white/72 hover:text-white transition-colors duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,8 +77,8 @@ export default function Footer() {
         </RevealOnScroll>
 
         <div className="mt-16 pt-8 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-xs text-white/55">Buenos Aires, Argentina</span>
-          <span className="text-xs text-white/55">
+          <span className="text-xs text-white/68">Buenos Aires, Argentina</span>
+          <span className="text-xs text-white/68">
             &copy; {new Date().getFullYear()} Patricio Martinez
           </span>
         </div>

@@ -25,7 +25,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
         scrolled
           ? "bg-[var(--bg-secondary)]/95 backdrop-blur-md shadow-sm"
-          : "bg-black/10 backdrop-blur-sm"
+          : "bg-black/30 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex items-center justify-between h-16">
@@ -47,7 +47,7 @@ export default function Header() {
               className={`link-underline text-sm font-medium tracking-wide transition-colors duration-300 ${
                 scrolled
                   ? "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                  : "text-white/70 hover:text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               {link.label}
@@ -62,7 +62,7 @@ export default function Header() {
           className={`hidden md:inline-flex items-center px-5 py-2 text-xs font-semibold tracking-widest uppercase rounded-sm transition-all duration-300 ${
             scrolled
               ? "bg-[var(--bg-dark)] text-[var(--text-inverse)] hover:bg-[var(--accent)]"
-              : "bg-white/10 text-white border border-white/20 hover:bg-white/20"
+              : "bg-white/15 text-white border border-white/30 hover:bg-white/25"
           }`}
         >
           Ver CV

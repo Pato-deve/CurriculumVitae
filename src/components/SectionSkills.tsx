@@ -71,7 +71,7 @@ export default function SectionSkills() {
   return (
     <section
       id="skills"
-      className="scroll-mt-24 pb-28 md:pb-40 bg-[var(--bg-muted)] relative overflow-visible"
+      className="deferred-section scroll-mt-24 pb-28 md:pb-40 bg-[var(--bg-muted)] relative overflow-visible"
     >
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 relative z-30 pt-8 md:pt-12 lg:pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-16 items-start lg:-mt-44">

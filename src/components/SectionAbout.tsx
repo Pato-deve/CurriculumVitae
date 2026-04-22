@@ -22,7 +22,7 @@ export default function SectionAbout() {
   return (
     <section
       id="perfil"
-      className="scroll-mt-24 relative pt-24 md:pt-32 pb-28 md:pb-40 bg-[var(--bg-muted)] overflow-hidden"
+      className="deferred-section scroll-mt-24 relative pt-24 md:pt-32 pb-28 md:pb-40 bg-[var(--bg-muted)] overflow-hidden"
     >
       {/* Gradient transition from Projects (bg-primary) */}
       <div className="pointer-events-none absolute top-0 left-0 right-0 h-24 md:h-32 bg-gradient-to-b from-[var(--bg-primary)] to-transparent" />
@@ -116,10 +116,10 @@ export default function SectionAbout() {
               </div>
 
               <div className="bg-[var(--bg-dark)] rounded-[var(--radius-md)] p-7 border border-white/5 text-[var(--text-inverse)]">
-                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/45 mb-3 block">
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60 mb-3 block">
                   Cómo trabajo
                 </span>
-                <p className="text-sm leading-relaxed text-white/75">
+                <p className="text-sm leading-relaxed text-white/84">
                   Priorizo bases técnicas limpias, automatización donde aporta
                   de verdad y una capa visual que no tape la función del
                   producto.

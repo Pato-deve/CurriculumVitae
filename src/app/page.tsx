@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+import Image from "next/image";
 import Header from "@/components/Header";
 import ParticleVideoHero from "@/components/ParticleVideoHero";
 import SectionSkills from "@/components/SectionSkills";
@@ -5,7 +8,48 @@ import SectionProjects from "@/components/SectionProjects";
 import SectionAbout from "@/components/SectionAbout";
 import Footer from "@/components/Footer";
 
+function findPublicAsset(candidates: string[]) {
+  for (const candidate of candidates) {
+    const absolutePath = path.join(process.cwd(), "public", candidate);
+    if (fs.existsSync(absolutePath)) {
+      return `/${candidate.replace(/\\/g, "/")}`;
+    }
+  }
+
+  return null;
+}
+
+function getHeroVideoSources() {
+  const videosDir = path.join(process.cwd(), "public", "videos");
+  const videoExtensions = new Set([".mp4", ".webm", ".ogg", ".mov"]);
+
+  try {
+    const files = fs
+      .readdirSync(videosDir)
+      .filter((file) => videoExtensions.has(path.extname(file).toLowerCase()))
+      .sort((left, right) => {
+        if (left === "hero.mp4") return -1;
+        if (right === "hero.mp4") return 1;
+        return left.localeCompare(right);
+      });
+
+    return files.map((file) => `/videos/${file}`);
+  } catch {
+    return ["/videos/hero.mp4"];
+  }
+}
+
 export default function Home() {
+  const heroVideoSources = getHeroVideoSources();
+  const heroImageSrc = findPublicAsset([
+    "images/hero-proteinas.png",
+    "hero-proteinas.png",
+  ]);
+  const featuredProjectImageSrc = findPublicAsset([
+    "images/perfil-lvnutrition.png",
+    "perfil-lvnutrition.png",
+  ]);
+
   return (
     <>
       <Header />
@@ -16,7 +60,18 @@ export default function Home() {
         className="relative min-h-[80vh] flex items-center justify-center pt-16 mt-[-64px] pb-16"
       >
         <div className="absolute inset-0 z-0 bg-[#000000]">
-          <ParticleVideoHero />
+          {heroImageSrc ? (
+            <Image
+              src={heroImageSrc}
+              alt=""
+              fill
+              priority
+              fetchPriority="high"
+              sizes="100vw"
+              className="object-cover object-center opacity-20"
+            />
+          ) : null}
+          <ParticleVideoHero videoSources={heroVideoSources} />
           {/* Viñeta de degradado atmosférico para garantizar lecturabilidad extrema en el texto izquierdo */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-transparent to-transparent pointer-events-none" />
@@ -25,7 +80,7 @@ export default function Home() {
         <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-10 mt-16 pointer-events-none">
           <div className="max-w-2xl py-8">
             <div className="animate-fade-in-up">
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/60 mb-4 block drop-shadow-sm">
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/75 mb-4 block drop-shadow-sm">
                 Full Stack &bull; DevOps &bull; SysAdmin
               </span>
               <h1 className="font-serif text-5xl md:text-7xl leading-[1.05] text-white drop-shadow-md">
@@ -33,7 +88,7 @@ export default function Home() {
                 <br />
                 <span className="italic">Martinez.</span>
               </h1>
-              <p className="mt-8 text-sm md:text-base leading-relaxed text-white/80 max-w-md drop-shadow-sm">
+              <p className="mt-8 text-sm md:text-base leading-relaxed text-white/88 max-w-md drop-shadow-sm">
                 Construyendo soluciones sólidas desde la base de datos hasta el
                 despliegue. Estudiante de Ingeniería Informática enfocado en
                 automatización e infraestructura.
@@ -76,7 +131,7 @@ export default function Home() {
             </div>
 
             <div className="animate-slide-in-right delay-300 pointer-events-auto mt-8">
-              <div className="flex items-center gap-3 text-white/60">
+              <div className="flex items-center gap-3 text-white/75">
                 <span className="text-xs font-mono tracking-wider">BA</span>
                 <div className="h-px w-16 bg-white/30" />
                 <span className="text-xs tracking-wide font-medium">
@@ -92,7 +147,7 @@ export default function Home() {
       <SectionSkills />
 
       {/* ═══ PROYECTOS ═══ */}
-      <SectionProjects />
+      <SectionProjects featuredImageSrc={featuredProjectImageSrc} />
 
       {/* ═══ PERFIL + CERTIFICACIONES ═══ */}
       <SectionAbout />
