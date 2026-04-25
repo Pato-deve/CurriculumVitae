@@ -53,7 +53,7 @@ export default function ParticleVideoHero({
       }
 
       if (!document.hidden && video.src) {
-        video.play().catch(() => {});
+        video.play().catch(() => { });
       }
     };
 
@@ -67,7 +67,7 @@ export default function ParticleVideoHero({
       }
 
       if (video.src) {
-        video.play().catch(() => {});
+        video.play().catch(() => { });
       }
     };
 
@@ -155,7 +155,7 @@ export default function ParticleVideoHero({
       procCanvas.height = processingHeight;
       videoReadyRef.current = true;
       if (!reducedMotionRef.current && !document.hidden) {
-        video.play().catch(() => {});
+        video.play().catch(() => { });
       }
     };
 

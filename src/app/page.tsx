@@ -57,7 +57,7 @@ export default function Home() {
       {/* ═══ HERO ═══ */}
       <section
         id="hero"
-        className="relative min-h-[80vh] flex items-center justify-center pt-16 mt-[-64px] pb-16"
+        className="relative z-0 min-h-[80vh] flex items-center justify-center pt-16 mt-[-64px] pb-16"
       >
         <div className="absolute inset-0 z-0 bg-[#000000]">
           {heroImageSrc ? (
@@ -77,7 +77,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-10 mt-16 pointer-events-none">
+        <div className="relative z-90 w-full max-w-[1200px] mx-auto px-6 md:px-10 mt-16 pointer-events-none">
           <div className="max-w-2xl py-8">
             <div className="animate-fade-in-up">
               <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/75 mb-4 block drop-shadow-sm">
