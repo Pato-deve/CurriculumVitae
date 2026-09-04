@@ -187,7 +187,7 @@ export default function SectionProjects({
                   {project.description}
                 </p>
                 <a
-                  href={PROJECTS.href}
+                  href={project.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-8 inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold tracking-widest uppercase rounded-sm bg-white text-[var(--bg-dark)] hover:bg-[var(--bg-muted)] transition-colors duration-300"
