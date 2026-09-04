@@ -19,10 +19,11 @@ const FEATURED_PROJECT = {
 
 const PROJECTS = [
   {
-    title: "MCP",
+    title: "Unyk",
     description:
-      "Sistema de gestion de contexto basado en RAG y SQLite disenado para potenciar agentes de inteligencia artificial.",
-    technologies: ["Python", "SQLite", "RAG"],
+      "Agencia de desarrollo web con animaciones modernas, planes de pago y contacto.",
+    technologies: ["Next.js", "SQLite", "Web"],
+    href: "https://www.unyk-iota.vercel.app",
   },
   {
     title: "Auto-Switch Network Monitor",
@@ -185,7 +186,12 @@ export default function SectionProjects({
                 <p className="text-sm leading-relaxed text-[var(--text-secondary)] flex-1 mb-6 max-w-[58ch]">
                   {project.description}
                 </p>
-
+                <a
+                  href={PROJECTS.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8 inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold tracking-widest uppercase rounded-sm bg-white text-[var(--bg-dark)] hover:bg-[var(--bg-muted)] transition-colors duration-300"
+                >
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {project.technologies.map((tech) => (
                     <span
